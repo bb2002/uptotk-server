@@ -21,11 +21,7 @@ import { validate } from 'class-validator';
 
 @Controller('upload')
 export class UploadController {
-  constructor(
-    private readonly uploadService: UploadService,
-    @Inject(Logger)
-    private readonly logger: Logger,
-  ) {}
+  constructor(private readonly uploadService: UploadService) {}
 
   @Post('/')
   @UseInterceptors(FilesInterceptor('files', 5, multerDiskOptions))
