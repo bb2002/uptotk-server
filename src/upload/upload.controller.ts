@@ -43,10 +43,14 @@ export class UploadController {
       throw new BadRequestException();
     }
 
+    const policyResult = await this.uploadService.isPostUploadAbuser(ipAddress);
 
 
-    console.log(files);
-    console.log('ipAddress', ipAddress);
-    console.log('dto', uploadPostDto);
+    // Post 를 등록
+    await this.uploadService.uploadNewPost(
+        ipAddress,
+        files,
+        uploadPostDto
+    )
   }
 }
