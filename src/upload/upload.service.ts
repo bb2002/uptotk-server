@@ -8,7 +8,9 @@ import { UploadPostDto } from './dto/upload-post.dto';
 import { AuthorizationMethodType } from './enums/file-authorization.enum';
 import { encryptString } from '../libs/bcrypt.util';
 import { UPLOAD_PATH } from './multer-settings';
-import fs from 'fs';
+import * as fs from 'fs';
+import { generateEasyUUID } from './enums/easy-english-word';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UploadService {
@@ -32,7 +34,7 @@ export class UploadService {
     uploadPostDto: UploadPostDto,
   ) {
     if (files.length > 5) {
-      throw new BadRequestException('Too many file entites');
+      throw new BadRequestException('Too many file entities');
     }
 
     const uploadGroup = new UploadGroupEntity();
@@ -48,6 +50,23 @@ export class UploadService {
       uploadGroup.password = null;
     }
 
+    // Easy UUID 만들기
+    for (let i = 0; i < 5; ++i) {
+      const newEasyUUID = generateEasyUUID();
+      const isNotEmptyUUID = await this.uploadGroupRepository.findOne({
+        where: { easyUUID: newEasyUUID },
+      });
+      if (!isNotEmptyUUID) {
+        uploadGroup.easyUUID = newEasyUUID;
+        break;
+      }
+    }
+    if (!uploadGroup.easyUUID) {
+      // 5회 이내로 EasyUUID 를 만들어내지 못한경우
+      // HARD 한 UUID 를 사용하도록 한다
+      uploadGroup.easyUUID = uuidv4().split('-')[0];
+    }
+
     uploadGroup.currentDownloadCount = 0;
     uploadGroup.maxDownloadCount = uploadPostDto.downloadLimit;
     uploadGroup.files = files.map((value) => {
@@ -60,12 +79,21 @@ export class UploadService {
       file.originalFilename = value.originalname;
       return file;
     });
-
-    // UploadFileEntity 를 저장
-    await this.uploadFileRepository.save(uploadGroup.files);
+    const expiredAt = new Date();
+    expiredAt.setDate(expiredAt.getDate() + uploadPostDto.expiredDate);
+    uploadGroup.expiredAt = expiredAt;
 
     // UploadGroupEntity 를 저장
     await this.uploadGroupRepository.save(uploadGroup);
+
+    // UploadFileEntity 를 저장
+    for (let i = 0; i < uploadGroup.files.length; ++i) {
+      await this.uploadFileRepository.save(uploadGroup.files[i]);
+    }
+
+    return {
+      easyUUID: uploadGroup.easyUUID,
+    };
   }
 
   /**
@@ -82,6 +110,7 @@ export class UploadService {
         ipAddress,
         createdAt: MoreThan(today),
       },
+      relations: ['files'],
     });
 
     if (todayUploadPosts.length > 0) {

@@ -30,6 +30,12 @@ export class UploadGroupEntity {
   password?: string;
 
   @Column({
+    name: 'easy_uuid',
+    type: 'varchar',
+  })
+  easyUUID: string;
+
+  @Column({
     name: 'expired_at',
     type: 'datetime',
   })

@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { UploadService } from './upload.service';
 import { UploadGroupEntity } from './entities/upload-group.entity';
 import { UploadFileEntity } from './entities/upload-file.entity';
@@ -9,5 +9,6 @@ import { UploadController } from './upload.controller';
   providers: [UploadService],
   controllers: [UploadController],
   imports: [TypeOrmModule.forFeature([UploadGroupEntity, UploadFileEntity])],
+  exports: [UploadService],
 })
 export class UploadModule {}

@@ -3,10 +3,7 @@ import {
   Body,
   Controller,
   ForbiddenException,
-  Inject,
   InternalServerErrorException,
-  Ip,
-  Logger,
   Post,
   UploadedFiles,
   UseInterceptors,
@@ -39,7 +36,7 @@ export class UploadController {
       uploadPostDto = plainToInstance(UploadPostDto, body);
     } catch (ex) {
       await this.removeUploadedFiles(files);
-      throw new BadRequestException();
+      throw new BadRequestException(ex);
     }
 
     // DTO 검증
@@ -58,10 +55,10 @@ export class UploadController {
 
     // Post 를 등록
     try {
-      await this.uploadService.saveNewPost(ipAddress, files, uploadPostDto);
+      return this.uploadService.saveNewPost(ipAddress, files, uploadPostDto);
     } catch (ex) {
       await this.removeUploadedFiles(files);
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(ex);
     }
   }
 
@@ -73,7 +70,7 @@ export class UploadController {
   private async removeUploadedFiles(files: Array<Express.Multer.File>) {
     for (const file of files) {
       await this.uploadService.removeFileFromDisk(
-        file.destination.split('/')[0],
+        file.destination.split('/')[1],
         file.filename,
       );
     }
