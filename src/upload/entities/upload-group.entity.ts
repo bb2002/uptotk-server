@@ -3,12 +3,11 @@ import {
   CreateDateColumn,
   Entity,
   OneToMany,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UploadFileEntity } from './upload-file.entity';
-import { FileAuthorization } from '../enums/file-authorization.enum';
+import { AuthorizationMethodType } from '../enums/file-authorization.enum';
 
 @Entity('uk_upload_groups')
 export class UploadGroupEntity {
@@ -16,19 +15,19 @@ export class UploadGroupEntity {
   _id: number;
 
   @Column({
-    name: 'authorization',
+    name: 'auth_method',
     type: 'enum',
-    enum: FileAuthorization,
-    default: FileAuthorization.OPEN,
+    enum: AuthorizationMethodType,
+    default: AuthorizationMethodType.OPEN,
   })
-  authorization: FileAuthorization;
+  authMethod: AuthorizationMethodType;
 
   @Column({
     name: 'password',
     type: 'text',
     nullable: true,
   })
-  password: string;
+  password?: string;
 
   @Column({
     name: 'expired_at',

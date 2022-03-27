@@ -1,4 +1,4 @@
-import { FileAuthorization } from '../enums/file-authorization.enum';
+import { AuthorizationMethodType } from '../enums/file-authorization.enum';
 import {
   IsEnum,
   IsNumber,
@@ -11,8 +11,8 @@ import {
 } from 'class-validator';
 
 export class UploadPostDto {
-  @IsEnum(FileAuthorization)
-  permission: FileAuthorization;
+  @IsEnum(AuthorizationMethodType)
+  authMethod: AuthorizationMethodType;
 
   @IsString()
   @MinLength(4)

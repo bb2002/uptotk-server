@@ -1,13 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UploadController } from './upload/upload.controller';
 import { UploadModule } from './upload/upload.module';
 import { DownloadModule } from './download/download.module';
 import { AnalysisModule } from './analysis/analysis.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
