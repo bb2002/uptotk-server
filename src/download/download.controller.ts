@@ -1,13 +1,9 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { UploadService } from '../upload/upload.service';
 import { DownloadService } from './download.service';
 
 @Controller('download')
 export class DownloadController {
-  constructor(
-    private readonly DownloadService: DownloadService,
-    private readonly UploadService: UploadService,
-  ) {}
+  constructor(private readonly downloadService: DownloadService) {}
 
   @Get('/file/:file')
   async downloadFile(@Param('file') file: string) {
@@ -19,7 +15,6 @@ export class DownloadController {
     @Param('easyUUID') easyUUID: string,
     @Query('password') password: string,
   ) {
-    console.log(easyUUID);
-    console.log(password);
+    return this.downloadService.readOnePost(easyUUID, password);
   }
 }
