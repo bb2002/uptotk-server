@@ -14,6 +14,7 @@ import { compareString } from '../libs/bcrypt.util';
 import { DownloadDetailEntity } from './entities/download-detail.entity';
 import { UPLOAD_PATH } from 'src/upload/multer-settings';
 import { DownloadFileDto } from './dto/download-file.dto';
+import * as fs from 'fs';
 
 @Injectable()
 export class DownloadService {
@@ -72,6 +73,7 @@ export class DownloadService {
       where: { savedFilename },
       relations: ['uploadGroup'],
     });
+    const fileDownloadPath = `${UPLOAD_PATH}/${fileEntity.folderName}/${fileEntity.savedFilename}`;
 
     if (!fileEntity) {
       // 파일이 없는 경우
@@ -79,9 +81,9 @@ export class DownloadService {
     } else {
       // 파일이 있는 경우, Validation 진행
       this.checkPostValidation(fileEntity.uploadGroup);
-
-      // TODO
-      // 파일이 존재하는지 확인
+      if (!fs.existsSync(fileDownloadPath)) {
+        throw new InternalServerErrorException('Current file missed.');
+      }
     }
 
     // 다운로드 기록을 저장
@@ -89,7 +91,7 @@ export class DownloadService {
 
     // 최종 다운로드 경로 반환
     return {
-      fileDownloadPath: `${UPLOAD_PATH}/${fileEntity.folderName}/${fileEntity.savedFilename}`,
+      fileDownloadPath,
       fileOriginalName: fileEntity.originalFilename,
     };
   }
@@ -110,20 +112,6 @@ export class DownloadService {
         ipAddress,
       },
     });
-
-    // uk_download_details 를 업데이트 한다.
-    if (downloadDetail) {
-      // 이전에 해당 파일을 다운로드한 경험이 있는 경우
-      downloadDetail.currentDownloadCount += 1;
-      await this.downloadDetailEntity.save(downloadDetail);
-    } else {
-      // 처음 이 파일을 다운로드 하는 경우
-      const newDownloadDetail = new DownloadDetailEntity();
-      newDownloadDetail.currentDownloadCount = 1;
-      newDownloadDetail.fileEntity = fileEntity;
-      newDownloadDetail.ipAddress = ipAddress;
-      await this.downloadDetailEntity.save(newDownloadDetail);
-    }
 
     // uk_upload_groups 를 업데이트 한다.
     const uploadGroup = await this.uploadGroupRepository.findOne({
@@ -149,6 +137,20 @@ export class DownloadService {
     if (!downloadDetailUploadGroup) {
       uploadGroup.currentDownloadCount += 1;
       await this.uploadGroupRepository.save(uploadGroup);
+    }
+
+    // uk_download_details 를 업데이트 한다.
+    if (downloadDetail) {
+      // 이전에 해당 파일을 다운로드한 경험이 있는 경우
+      downloadDetail.currentDownloadCount += 1;
+      await this.downloadDetailEntity.save(downloadDetail);
+    } else {
+      // 처음 이 파일을 다운로드 하는 경우
+      const newDownloadDetail = new DownloadDetailEntity();
+      newDownloadDetail.currentDownloadCount = 1;
+      newDownloadDetail.fileEntity = fileEntity;
+      newDownloadDetail.ipAddress = ipAddress;
+      await this.downloadDetailEntity.save(newDownloadDetail);
     }
   }
 
