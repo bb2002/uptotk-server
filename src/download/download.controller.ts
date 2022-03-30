@@ -1,13 +1,27 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Res } from '@nestjs/common';
 import { DownloadService } from './download.service';
+import { RealIp } from 'nestjs-real-ip';
+import { Response } from 'express';
 
 @Controller('download')
 export class DownloadController {
   constructor(private readonly downloadService: DownloadService) {}
 
-  @Get('/file/:file')
-  async downloadFile(@Param('file') file: string) {
-    console.log(file);
+  @Get('/file/:savedFilename')
+  async downloadFile(
+    @Param('savedFilename') savedFilename: string,
+    @RealIp() ipAddress: string,
+    @Res() res: Response,
+  ) {
+    const fileDownloadDto = await this.downloadService.downloadFile(
+      savedFilename,
+      ipAddress,
+    );
+
+    res.download(
+      fileDownloadDto.fileDownloadPath,
+      fileDownloadDto.fileOriginalName,
+    );
   }
 
   @Get('/:easyUUID')

@@ -5,12 +5,17 @@ import { UploadModule } from '../upload/upload.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UploadGroupEntity } from '../upload/entities/upload-group.entity';
 import { UploadFileEntity } from '../upload/entities/upload-file.entity';
+import { DownloadDetailEntity } from './entities/download-detail.entity';
 
 @Module({
   controllers: [DownloadController],
   providers: [DownloadService],
   imports: [
-    TypeOrmModule.forFeature([UploadGroupEntity, UploadFileEntity]),
+    TypeOrmModule.forFeature([
+      UploadGroupEntity,
+      UploadFileEntity,
+      DownloadDetailEntity,
+    ]),
     UploadModule,
   ],
 })

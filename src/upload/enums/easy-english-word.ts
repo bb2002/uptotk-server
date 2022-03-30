@@ -837,5 +837,5 @@ export function generateEasyUUID() {
 
   return `${easyEnglishWords[randomInt(min, max)]}-${
     easyEnglishWords[randomInt(min, max)]
-  }-${easyEnglishWords[randomInt(min, max)]}`;
+  }`;
 }

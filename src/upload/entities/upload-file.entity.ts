@@ -1,4 +1,13 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { DownloadDetailEntity } from 'src/download/entities/download-detail.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { UploadGroupEntity } from './upload-group.entity';
 
 @Entity('uk_upload_files')
@@ -39,9 +48,26 @@ export class UploadFileEntity {
   })
   fileCapacity: number;
 
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  // 이 파일이 속한 업로드 그룹
   @ManyToOne(
     () => UploadGroupEntity,
     (uploadGroupEntity) => uploadGroupEntity.files,
+    {
+      onDelete: 'SET NULL',
+    },
   )
   uploadGroup: UploadGroupEntity;
+
+  // 이 파일을 다운로드 한 유저들 정보
+  @OneToMany(
+    () => DownloadDetailEntity,
+    (downloadDetailEntity) => downloadDetailEntity.fileEntity,
+  )
+  downloadDetails: DownloadDetailEntity[];
 }
