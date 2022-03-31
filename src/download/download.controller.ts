@@ -10,12 +10,14 @@ export class DownloadController {
   @Get('/file/:savedFilename')
   async downloadFile(
     @Param('savedFilename') savedFilename: string,
+    @Query('password') password: string,
     @RealIp() ipAddress: string,
     @Res() res: Response,
   ) {
     const fileDownloadDto = await this.downloadService.downloadFile(
       savedFilename,
       ipAddress,
+      password,
     );
 
     res.download(

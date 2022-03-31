@@ -48,7 +48,7 @@ export class DownloadService {
 
     if (post.authMethod === AuthorizationMethodType.PASSWORD) {
       // 비밀번호가 걸린 포스트라면 비밀번호를 확인한다.
-      if (!password || (await compareString(post.password, password))) {
+      if (!password || !(await compareString(password, post.password))) {
         post.files = null;
       }
     }
@@ -68,11 +68,25 @@ export class DownloadService {
   async downloadFile(
     savedFilename: string,
     ipAddress: string,
+    password: string,
   ): Promise<DownloadFileDto> {
     const fileEntity = await this.uploadFileRepository.findOne({
       where: { savedFilename },
       relations: ['uploadGroup'],
     });
+
+    if (
+      fileEntity.uploadGroup.authMethod === AuthorizationMethodType.PASSWORD
+    ) {
+      // 인증방식이 Password 인 파일이면 비밀번호를 줘야 다운로드 가능
+      if (
+        !password ||
+        !(await compareString(password, fileEntity.uploadGroup.password))
+      ) {
+        throw new ForbiddenException('Password not matched');
+      }
+    }
+
     const fileDownloadPath = `${UPLOAD_PATH}/${fileEntity.folderName}/${fileEntity.savedFilename}`;
 
     if (!fileEntity) {
