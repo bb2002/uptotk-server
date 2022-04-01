@@ -4,6 +4,7 @@ import { DownloadModule } from './download/download.module';
 import { AnalysisModule } from './analysis/analysis.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BatchModule } from './batch/batch.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       }),
       inject: [ConfigService],
     }),
+    BatchModule,
   ],
 })
 export class AppModule {}

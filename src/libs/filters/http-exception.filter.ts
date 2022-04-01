@@ -16,19 +16,24 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const res = ctx.getResponse();
     const req = ctx.getRequest<Request>();
 
-    this.logger.error(exception);
-
     if (!(exception instanceof HttpException)) {
       exception = new InternalServerErrorException();
     }
 
-    const response = (exception as HttpException).getResponse();
+    const response = (exception as HttpException).getResponse() as {
+      statusCode: number;
+    };
 
     const log = {
       timestamp: new Date(),
       url: req.url,
       response,
     };
+
+    // 500 또는 statusCode 가 없는 경우에는 로그 찍기
+    if (!response.statusCode || response.statusCode >= 500) {
+      this.logger.error(exception);
+    }
 
     res.status((exception as HttpException).getStatus()).json(log);
   }

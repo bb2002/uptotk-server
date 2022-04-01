@@ -75,6 +75,11 @@ export class DownloadService {
       relations: ['uploadGroup'],
     });
 
+    if (!fileEntity || !fileEntity.uploadGroup) {
+      // 파일이 없거나, 파일 그룹이 없는 경우
+      throw new NotFoundException();
+    }
+
     if (
       fileEntity.uploadGroup.authMethod === AuthorizationMethodType.PASSWORD
     ) {
@@ -89,15 +94,10 @@ export class DownloadService {
 
     const fileDownloadPath = `${UPLOAD_PATH}/${fileEntity.folderName}/${fileEntity.savedFilename}`;
 
-    if (!fileEntity) {
-      // 파일이 없는 경우
-      throw new NotFoundException();
-    } else {
-      // 파일이 있는 경우, Validation 진행
-      this.checkPostValidation(fileEntity.uploadGroup);
-      if (!fs.existsSync(fileDownloadPath)) {
-        throw new InternalServerErrorException('Current file missed.');
-      }
+    // 파일이 있는 경우, Validation 진행
+    this.checkPostValidation(fileEntity.uploadGroup);
+    if (!fs.existsSync(fileDownloadPath)) {
+      throw new InternalServerErrorException('Current file missed.');
     }
 
     // 다운로드 기록을 저장
