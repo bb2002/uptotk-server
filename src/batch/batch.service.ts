@@ -18,7 +18,7 @@ export class BatchService {
     private readonly logger: LoggerService,
   ) {}
 
-  @Interval('RemoveUnusedFiles', 10000)
+  @Interval('RemoveUnusedFiles', 1800000)
   async removeUnusedFilesHandler() {
     const allFileGroups = await this.uploadGroupRepository.find({
       relations: ['files'],

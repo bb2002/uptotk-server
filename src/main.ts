@@ -28,9 +28,10 @@ async function bootstrap() {
     logger,
   });
 
+  app.enableCors();
   app.useGlobalInterceptors(new LoggerInterceptor(logger));
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter(logger));
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();
