@@ -173,7 +173,7 @@ export class DownloadService {
    * @param post 대상 Post
    */
   private checkPostValidation(post: UploadGroupEntity) {
-    if (post.currentDownloadCount >= post.maxDownloadCount) {
+    if (post.maxDownloadCount !== 0 && post.currentDownloadCount >= post.maxDownloadCount) {
       // 다운로드 횟수를 초과한 경우
       throw new ForbiddenException({
         message: 'Exceeded max download count.',

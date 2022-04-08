@@ -28,7 +28,8 @@ export class BatchService {
     const unusedGroups = allFileGroups.filter(
       (value) =>
         value.expiredAt.valueOf() < Date.now().valueOf() ||
-        value.currentDownloadCount >= value.maxDownloadCount,
+        (value.currentDownloadCount >= value.maxDownloadCount &&
+          value.maxDownloadCount !== 0),
     );
 
     const unusedFiles = [] as UploadFileEntity[];
