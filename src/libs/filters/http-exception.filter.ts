@@ -17,6 +17,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const req = ctx.getRequest<Request>();
 
     if (!(exception instanceof HttpException)) {
+      this.logger.error(`Unknown Exception ${exception}`);
       exception = new InternalServerErrorException();
     }
 
@@ -32,7 +33,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     // 500 또는 statusCode 가 없는 경우에는 로그 찍기
     if (!response.statusCode || response.statusCode >= 500) {
-      this.logger.error(exception);
+      this.logger.error(`Internal Server Error ${exception}`);
     }
 
     res.status((exception as HttpException).getStatus()).json(log);
