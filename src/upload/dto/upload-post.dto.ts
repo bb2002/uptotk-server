@@ -22,7 +22,7 @@ export class UploadPostDto {
 
   @IsNumber()
   @Min(1)
-  @Max(30)
+  @Max(90)
   expiredDate: number;
 
   @IsNumber()
