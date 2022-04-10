@@ -58,7 +58,7 @@ export class UploadGroupEntity {
   @Column({
     name: 'ip_address',
     type: 'varchar',
-    length: 20,
+    length: 255,
   })
   ipAddress: string;
 
