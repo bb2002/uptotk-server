@@ -1,4 +1,4 @@
-import { DownloadDetailEntity } from 'src/download/entities/download-detail.entity';
+import { DownloadDetailEntity } from '../../download/entities/download-detail.entity';
 import {
   Column,
   CreateDateColumn,

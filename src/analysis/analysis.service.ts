@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UploadFileEntity } from 'src/upload/entities/upload-file.entity';
+import { UploadFileEntity } from '../upload/entities/upload-file.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UploadGroupEntity } from '../upload/entities/upload-group.entity';
-import { DownloadDetailEntity } from 'src/download/entities/download-detail.entity';
+import { DownloadDetailEntity } from '../download/entities/download-detail.entity';
 import { OverviewStatusDto } from './dto/overview-status.dto';
 
 @Injectable()

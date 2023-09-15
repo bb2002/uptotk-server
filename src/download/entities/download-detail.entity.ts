@@ -1,4 +1,4 @@
-import { UploadFileEntity } from 'src/upload/entities/upload-file.entity';
+import { UploadFileEntity } from '../../upload/entities/upload-file.entity';
 import {
   Column,
   CreateDateColumn,

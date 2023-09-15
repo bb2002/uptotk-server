@@ -12,7 +12,7 @@ import { AuthorizationMethodType } from '../upload/enums/file-authorization.enum
 import { UptotkExtraCode } from './enums/extra-uptotk-code.enum';
 import { compareString } from '../libs/bcrypt.util';
 import { DownloadDetailEntity } from './entities/download-detail.entity';
-import { UPLOAD_PATH } from 'src/upload/multer-settings';
+import { UPLOAD_PATH } from '../upload/multer-settings';
 import { DownloadFileDto } from './dto/download-file.dto';
 import * as fs from 'fs';
 
