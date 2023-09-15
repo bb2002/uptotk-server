@@ -1,9 +1,10 @@
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import {
-  CacheInterceptor,
   Controller,
   Get,
   UseInterceptors,
 } from '@nestjs/common';
+
 import { AnalysisService } from './analysis.service';
 
 @Controller('analysis')

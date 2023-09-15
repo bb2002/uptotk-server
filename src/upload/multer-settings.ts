@@ -23,7 +23,7 @@ export const multerDiskOptions: MulterOptions = {
     },
   }),
   limits: {
-    fileSize: 1024 * 1024 * 100,
+    fileSize: 1024 * 1024 * 1024 * 2,
     files: 5,
   },
 };

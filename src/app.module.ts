@@ -15,7 +15,7 @@ import { BatchModule } from './batch/batch.module';
       envFilePath:
         process.env.NODE_ENV === 'production'
           ? '.production.env'
-          : '.development.env',
+          : '.env',
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
